@@ -1,0 +1,163 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #0f172a;
+  overflow-x: hidden;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.layout-wrapper {
+  min-height: 100vh;
+  width: 100%;
+}
+
+
+
+/* =========================
+   CARDS
+========================= */
+
+.cards-grid {
+  padding: 2vh 10px 0 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+   
+}
+
+.card h3 {
+  color: #64748b;
+  margin-bottom: 10px;
+}
+
+.card h1 {
+  color: #0f172a;
+  font-size: 32px;
+}
+
+/* =========================
+   CHARTS
+========================= */
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.chart-card {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-card {
+  background: white;
+  margin-top: 25px;
+  border-radius: 18px;
+  padding: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 15px;
+}
+
+thead {
+  background: #f1f5f9;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 992px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 80px;
+  }
+
+  .sidebar span,
+  .logout-btn span {
+    display: none;
+  }
+
+  .main-content.expanded,
+  .main-content.collapsed {
+    margin-left: 80px;
+  }
+
+  .cards-grid {
+    Margin-top: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  .page-content {
+    padding: 15px;
+  }
+
+  .top-header {
+    padding: 0 15px;
+  }
+
+  .top-header h2 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 500px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-card {
+    padding: 15px;
+  }
+
+  .card h1 {
+    font-size: 24px;
+  }
+}

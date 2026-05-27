@@ -1,0 +1,46 @@
+/* Header - fixed top bar */
+.header {
+  width: 100%;
+  height: var(--header-height);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  background: linear-gradient(90deg, #451e40 0%, #140617 100%);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.25);
+  display: flex;
+  align-items: center;
+}
+
+.header-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+.left { display:flex; align-items:center; gap:14px; }
+.brand-title { color: #fff; font-weight:700; font-size:18px; }
+
+.hamburger-btn {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.06);
+  border: none; color: white; border-radius: 8px;
+  display: grid; place-items: center; cursor: pointer;
+}
+
+.right { display:flex; align-items:center; gap:12px; }
+.user { color: #fff; font-weight:600; margin-right:8px; }
+.logout-btn { background: #ef4444; border: none; color: white; padding:8px 10px; border-radius:8px; cursor:pointer; }
+
+@media (max-width: 768px) {
+  .brand-title { display:none; }
+  .header-inner { padding: 0 12px; }
+  .hamburger-btn { width:40px; height:40px; }
+}
+
+/* small accessibility focus */
+.hamburger-btn:focus, .logout-btn:focus { outline: 2px solid rgba(255,255,255,0.18); outline-offset:2px; }

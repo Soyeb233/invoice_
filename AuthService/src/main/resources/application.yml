@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: dev
+  ################### Hibernate Configuration ##########################
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: update
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: false
+
+server:
+  port: 8282
+  servlet:
+    context-path: /authService
+
+logging:
+  level:
+    org.springframework.security: TRACE
