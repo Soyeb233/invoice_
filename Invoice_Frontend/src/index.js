@@ -20,7 +20,7 @@ const root =
   );
 
 root.render(
-  <BrowserRouter>
+  <BrowserRouter basename="/invoice">
     <GoogleOAuthProvider clientId="600473531643-oi3n07dnckl59ckqltksq55ggm0hpjm1.apps.googleusercontent.com">
       <App />
     </GoogleOAuthProvider>
