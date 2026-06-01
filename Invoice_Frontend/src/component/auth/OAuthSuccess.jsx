@@ -35,7 +35,7 @@ export default function OAuthSuccess() {
 
     }
 
-  }, []);
+  }, [navigate,searchParams]);
 
   return (
     <div

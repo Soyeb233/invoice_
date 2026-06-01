@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "../../style/Login.css";
 import API from "../../api/axios";
-import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom"; 
 
 export default function Login() {
   const navigate = useNavigate();
@@ -45,26 +44,7 @@ export default function Login() {
     }
   };
 
-  // GOOGLE LOGIN
-  const handleGoogleSuccess = async (credentialResponse) => {
-
-     
-    try {
-      const response = await API.post("/api/v1/auth/google", {
-        token: credentialResponse.credential,
-      });
-
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
-      );
-
-      navigate("/dashboard");
-    } catch (error) {
-      alert("Google Login Failed");
-    }
-  };
+ 
 
 
   const handleGoogleLogin=()=>{

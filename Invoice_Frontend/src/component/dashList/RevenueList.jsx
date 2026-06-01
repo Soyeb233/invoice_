@@ -1,7 +1,6 @@
 import React from "react";
 
 
-import Sidebar from "../Sidebar";
 export default function RevenueList() {
 
   const users = Array.from({ length: 20 }, (_, i) => ({

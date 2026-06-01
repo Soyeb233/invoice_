@@ -1,13 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
-import Login from './component/auth/Login';
+ 
+import './App.css'; 
 import Routing from './common/Routing';
+import { useLocation } from 'react-router-dom';
+import HeaderLogin from './component/HeaderLogin';
 function App() {
+   const location = useLocation();
+
+  const showGuestHeader =
+    location.pathname === '/login' ||
+    location.pathname === '/register';
+
   return (
-    <div className="App">
-        <Routing/>
-    </div>
+    <>
+      {showGuestHeader && <HeaderLogin />}
+      <Routing />
+    </>
   );
 }
-
 export default App;

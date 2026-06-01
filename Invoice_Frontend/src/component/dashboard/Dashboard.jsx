@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   LineChart,
@@ -13,6 +13,7 @@ import {
 } from "recharts";
 
 import "../../style/Dashboard.css";
+import axios from "axios";
 
 const lineData = [
   { month: "Jan", users: 30 },
@@ -30,27 +31,80 @@ const barData = [
   { month: "May", sales: 80 },
 ];
 
+ 
+
 export default function Dashboard() {
+
+const [totalUsers,setTotalUsers]=useState(0);
+const[totalSales,setTotalSales] =useState(0);
+const[orders,setOrders]=useState(0);
+const[totalRevenue,setTotalRevenue]=useState(0);
+
+ 
+
+useEffect(()=>{
+     
+     
+    setTotalUsers(totalUsers);
+    setTotalSales(totalSales);
+    setOrders(orders);
+    setTotalRevenue(totalRevenue);
+     
+},[totalUsers,totalSales,orders,totalRevenue])
+
+
+const totalUsersHandler=()=>{
+  alert("totalUsersHandler clicked");
+  axios.get("/api/v1/dashboard/total-users")
+  .then(response=>{
+     setTotalUsers(response.data.totalUsers);
+  })
+  .catch(error => {
+      console.error(error);
+    });
+}
+const totalSalesHandler=()=>{
+  alert("totalSalesHandler clicked");
+}
+
+const orderHandler=()=>{
+  alert("Orders clicked");
+}
+
+const totalRevenueHandler=()=>{
+  alert("totalRevenueHandler clicked");
+}
+
+
+
   return (
     <div className="dashboard-page">
       {/* Cards */}
       <div className="cards-grid">
-        <div className="card">
+        <div className="card"
+         onClick={totalUsersHandler}
+         style={{ cursor: "pointer" }}>
           <h3>Total Users</h3>
           <h1>245</h1>
         </div>
 
-        <div className="card">
+        <div className="card"
+         onClick={totalSalesHandler}
+          style={{ cursor: "pointer" }}>
           <h3>Total Sales</h3>
           <h1>₹52,000</h1>
         </div>
 
-        <div className="card">
+        <div className="card"
+         onClick={orderHandler}
+         style={{ cursor: "pointer" }}>
           <h3>Orders</h3>
           <h1>320</h1>
         </div>
 
-        <div className="card">
+        <div className="card"
+         onClick={totalRevenueHandler}
+          style={{ cursor: "pointer" }}>
           <h3>Revenue</h3>
           <h1>₹1,20,000</h1>
         </div>
@@ -93,7 +147,7 @@ export default function Dashboard() {
       </div>
 
       {/* Table */}
-      {/* <div className="table-card">
+       <div className="table-card">
         <h3>Users List</h3>
 
         <div className="table-wrapper">
@@ -108,30 +162,26 @@ export default function Dashboard() {
             </thead>
 
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>User 1</td>
-                <td>user1@email.com</td>
-                <td>Admin</td>
-              </tr>
-
-              <tr>
-                <td>2</td>
-                <td>User 2</td>
-                <td>user2@email.com</td>
-                <td>User</td>
-              </tr>
-
-              <tr>
-                <td>3</td>
-                <td>User 3</td>
-                <td>user3@email.com</td>
-                <td>Manager</td>
-              </tr>
+              {totalUsers.length > 0 ? (
+                totalUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                   <td colSpan="4" style={{ textAlign: "center", verticalAlign: "middle" }}>
+                     No users found
+                     </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

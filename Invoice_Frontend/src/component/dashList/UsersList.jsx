@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Sidebar from "../Sidebar";
+ 
 export default function UsersList() {
 
 
@@ -45,15 +45,9 @@ export default function UsersList() {
       };
   
   
-      const totalUserHandler=()=>{
-        
-      }
+      
 
-  const users = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    name: `User ${i + 1}`,
-    email: `user${i + 1}@mail.com`,
-  }));
+  
 
   return (
     <div>

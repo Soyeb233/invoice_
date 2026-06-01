@@ -10,6 +10,8 @@ export default function Header({
   sidebarOpen,
   setSidebarOpen,
 }) {
+
+  const username=localStorage.getItem("user");
   return (
     <header className="top-header">
       <div className="header-left">
@@ -24,7 +26,7 @@ export default function Header({
 
         <div>
           <h2>Invoice Dashboard</h2>
-          <p>Welcome Back, Tanveer 👋</p>
+          <p>Welcome Back, {username} 👋</p>
         </div>
       </div>
     </header>
