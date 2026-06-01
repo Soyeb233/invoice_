@@ -62,7 +62,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                     jwtService.generateAccessToken(user);
 
             response.sendRedirect(
-                    "http://localhost:3000/oauth-success?token="
+                    "http://localhost:3000/invoice/oauth-success?token="
                             + jwt
             );
 
