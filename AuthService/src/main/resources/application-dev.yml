@@ -17,6 +17,9 @@ spring:
               - openid
               - profile
               - email
+  oauth:
+    success-url: http://localhost:8282/invoice/oauth-success?token=
+    failed-url: http://localhost:8282/invoice/login?error=true
 
 
 # JWT TOKEN KEY AND ITS EXPIRATION
