@@ -173,6 +173,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
 
+        configuration.addAllowedOrigin("http://localhost:9696");
         // ADDED THIS URL TO ACCESS USING SWAGGER
         configuration.addAllowedOrigin("http://localhost:8686");
         configuration.addAllowedOrigin("http://103.208.56.61:8282/");
