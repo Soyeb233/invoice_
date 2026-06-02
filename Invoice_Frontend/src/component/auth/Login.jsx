@@ -50,7 +50,7 @@ export default function Login() {
   const handleGoogleLogin=()=>{
 
      window.location.href =
-    "http://localhost:9696/authService/oauth2/authorization/google";
+    "http://localhost:8282/authService/oauth2/authorization/google";
 
   }
 
