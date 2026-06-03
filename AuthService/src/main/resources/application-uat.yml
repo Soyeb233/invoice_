@@ -36,8 +36,10 @@ application:
 
 
 # UPLOAD DIRECTORY OF ANY DOCUMENTS
-upload:
-  dir: D:/uploads/profile-images/
+file:
+  upload:
+    dir: F:/uploads/profile-images/
+    storage: F:/uploads/storage/
 
 
 
