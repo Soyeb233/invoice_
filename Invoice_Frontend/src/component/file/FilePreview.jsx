@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from "../../api/axios";
 
 const FilePreview = () => {
-
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -12,54 +11,42 @@ const FilePreview = () => {
   const [fileName, setFileName] = useState("");
 
   useEffect(() => {
+    let objectUrl = null;
+
+    const loadFile = async () => {
+      try {
+        const response = await API.get(
+          `/api/v1/files/view/${id}`,
+          { responseType: "blob" }
+        );
+
+        const blob = response.data;
+        objectUrl = URL.createObjectURL(blob);
+
+        setFileUrl(objectUrl);
+        setContentType(response.headers["content-type"] || "");
+
+        const disposition =
+          response.headers["content-disposition"];
+
+        if (disposition) {
+          const match = disposition.match(/filename="?(.+)"?/);
+          if (match) setFileName(match[1]);
+        }
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     loadFile();
 
     return () => {
-      if (fileUrl) {
-        URL.revokeObjectURL(fileUrl);
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
       }
     };
-
-  }, []);
-
-  const loadFile = async () => {
-
-    try {
-
-      const response = await API.get(
-        `/api/v1/files/view/${id}`,
-        {
-          responseType: "blob"
-        }
-      );
-
-      const blob = response.data;
-      const url = URL.createObjectURL(blob);
-
-      setFileUrl(url);
-
-      setContentType(
-        response.headers["content-type"] || ""
-      );
-
-      // Optional: if backend sends filename header
-      const disposition =
-        response.headers["content-disposition"];
-
-      if (disposition) {
-        const match =
-          disposition.match(/filename="?(.+)"?/);
-
-        if (match) {
-          setFileName(match[1]);
-        }
-      }
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  }, [id]);
 
   if (!fileUrl) {
     return (
@@ -70,12 +57,7 @@ const FilePreview = () => {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#f5f7fb"
-      }}
-    >
+    <div style={{ minHeight: "100vh", background: "#f5f7fb" }}>
 
       {/* Header */}
       <div
@@ -88,24 +70,13 @@ const FilePreview = () => {
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
         }}
       >
-
         <div>
-          <h2
-            style={{
-              margin: 0,
-              color: "#1f2937"
-            }}
-          >
+          <h2 style={{ margin: 0, color: "#1f2937" }}>
             File Preview
           </h2>
 
           {fileName && (
-            <p
-              style={{
-                margin: "5px 0 0",
-                color: "#6b7280"
-              }}
-            >
+            <p style={{ margin: "5px 0 0", color: "#6b7280" }}>
               {fileName}
             </p>
           )}
@@ -124,22 +95,14 @@ const FilePreview = () => {
         >
           ← Back
         </button>
-
       </div>
 
-      {/* Preview Content */}
-      <div
-        style={{
-          padding: "20px"
-        }}
-      >
+      {/* Content */}
+      <div style={{ padding: "20px" }}>
 
+        {/* IMAGE */}
         {contentType.startsWith("image/") && (
-          <div
-            style={{
-              textAlign: "center"
-            }}
-          >
+          <div style={{ textAlign: "center" }}>
             <img
               src={fileUrl}
               alt="Preview"
@@ -147,13 +110,13 @@ const FilePreview = () => {
                 maxWidth: "100%",
                 maxHeight: "85vh",
                 borderRadius: "10px",
-                boxShadow:
-                  "0 4px 15px rgba(0,0,0,0.15)"
+                boxShadow: "0 4px 15px rgba(0,0,0,0.15)"
               }}
             />
           </div>
         )}
 
+        {/* PDF */}
         {contentType === "application/pdf" && (
           <iframe
             src={fileUrl}
@@ -167,6 +130,7 @@ const FilePreview = () => {
           />
         )}
 
+        {/* TEXT */}
         {contentType.startsWith("text/") && (
           <iframe
             src={fileUrl}
@@ -180,6 +144,7 @@ const FilePreview = () => {
           />
         )}
 
+        {/* UNSUPPORTED */}
         {!contentType.startsWith("image/") &&
           contentType !== "application/pdf" &&
           !contentType.startsWith("text/") && (
@@ -193,9 +158,7 @@ const FilePreview = () => {
               Preview not supported for this file type.
             </div>
           )}
-
       </div>
-
     </div>
   );
 };
