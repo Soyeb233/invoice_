@@ -5,56 +5,81 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.utiitsl.DMSAuthService.constants.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-
-@Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder
-@Table(name = "Users")
+@Entity
+@Table(name = "users")
 public class User implements UserDetails, Serializable {
 
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @NonNull
-    @Column(nullable = false, unique = true)
-    private String username;
-    @Column(nullable = false)
-    private String password;
-
-    @NonNull
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(name = "user_id")
+    private Long id;
 
     private String firstName;
     private String lastName;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
-    private String originalPassword;
+    private String password;
 
-    @Column(name = "activeStatus", nullable = false)
-    private boolean activeStatus;
+    private String originalPassword; // ⚠️ REMOVE in production (security risk)
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "mobileNo")
     private String mobileNo;
+    private String dateOfBirth;
+    private String aadhaarNumber;
+    private String panCard;
 
+    @Column(name = "profile_image_name")
+    private String profileImageName;
+
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
+    @CreationTimestamp
+    private Date createdAt;
+    private String createdBy;
+
+    @UpdateTimestamp
+    private Date updatedAt;
+    private String updatedBy;
+
+    @Column(nullable = false)
+    private boolean activeStatus;
+
+    // ✅ FIXED RELATIONSHIP
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private List<Address> addresses;
+
+    // Refresh token mapping
     @OneToOne(mappedBy = "user")
-    @ToString.Exclude // Exclude to prevent recursion
+    @ToString.Exclude
     private RefreshToken refreshToken;
 
     @Override
@@ -85,6 +110,6 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-            return activeStatus;
+        return activeStatus;
     }
 }

@@ -1,0 +1,36 @@
+.file-manager {
+  padding: 30px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.file-manager-header {
+  margin-bottom: 25px;
+}
+
+.file-manager-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.file-manager-header p {
+  color: #6b7280;
+  margin-top: 5px;
+}
+
+.upload-card,
+.file-list-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.empty-files {
+  text-align: center;
+  color: #888;
+  padding: 40px;
+}

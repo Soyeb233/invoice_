@@ -35,6 +35,12 @@ application:
 #=================== END ================================================#
 
 
+# UPLOAD DIRECTORY OF ANY DOCUMENTS
+upload:
+  dir: D:/uploads/profile-images/
+
+
+
 # --- REGISTER WITH EUREKA SERVER --- #
 # ################### REGISTER WITH EUREKA SERVER  ################### #
 #eureka:

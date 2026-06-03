@@ -22,6 +22,11 @@ import RevenueList from "../component/dashList/RevenueList";
 import DashboardLayout from "../component/dashboard/DashboardLayout";
 
 import ProtectedRoute from "./ProtectedRoute";
+import UploadFile from "../component/file/UploadFile";
+import FileItem from "../component/file/FileItem";
+import FileList from "../component/file/FileList";
+import FileManager from "../component/file/FileManager ";
+import FilePreview from "../component/file/FilePreview";
 
 export default function Routing() {
 
@@ -77,6 +82,30 @@ export default function Routing() {
         <Route
           path="/revenue"
           element={<RevenueList />}
+        />
+
+        <Route
+          path="/upload"
+          element={<UploadFile />}
+        />
+
+        <Route
+          path="/file-item"
+          element={<FileItem/>}
+        />
+
+        <Route
+          path="/file-list"
+          element={<FileList/>}
+        />
+         <Route
+          path="/files"
+          element={<FileManager/>}
+        />
+
+        <Route
+          path="/files/preview/:id"
+          element={<FilePreview />}
         />
 
       </Route>

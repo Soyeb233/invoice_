@@ -3,12 +3,15 @@ package com.utiitsl.DMSAuthService.service.userService;
 import com.utiitsl.DMSAuthService.common.response.PageResponse;
 import com.utiitsl.DMSAuthService.dto.RegisterRequestDTO;
 import com.utiitsl.DMSAuthService.dto.UserDTO;
+import com.utiitsl.DMSAuthService.dto.login.UserRequestDTO;
 import com.utiitsl.DMSAuthService.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface UserService {
 
+    UserRequestDTO createUser(UserRequestDTO userDTO, MultipartFile image);
     UserDTO createUser(RegisterRequestDTO userDTO);
     UserDTO getUserById(Integer id);
     UserDTO getUserByUsername(String username);

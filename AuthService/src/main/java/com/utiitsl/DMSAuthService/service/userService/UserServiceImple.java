@@ -7,10 +7,20 @@ import com.utiitsl.DMSAuthService.constants.Role;
 import com.utiitsl.DMSAuthService.dto.AuthenticationResponseDTO;
 import com.utiitsl.DMSAuthService.dto.RegisterRequestDTO;
 import com.utiitsl.DMSAuthService.dto.UserDTO;
+import com.utiitsl.DMSAuthService.dto.address.AddressDTO;
+import com.utiitsl.DMSAuthService.dto.login.UserRequestDTO;
+import com.utiitsl.DMSAuthService.entity.Address;
+import com.utiitsl.DMSAuthService.entity.District;
+import com.utiitsl.DMSAuthService.entity.State;
 import com.utiitsl.DMSAuthService.entity.User;
+import com.utiitsl.DMSAuthService.repository.DistrictRepository;
+import com.utiitsl.DMSAuthService.repository.StateRepository;
 import com.utiitsl.DMSAuthService.repository.UserRepository;
+import com.utiitsl.DMSAuthService.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -18,13 +28,20 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImple implements UserService{
 
 
@@ -32,7 +49,77 @@ public class UserServiceImple implements UserService{
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
+    private final StateRepository stateRepository;
+    private final DistrictRepository districtRepository;
 
+    private final FileStorageUtil fileStorageUtil;
+    @Override
+    @Transactional
+    public UserRequestDTO createUser(
+            UserRequestDTO dto,
+            MultipartFile image) {
+
+        User user = new User();
+
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setOriginalPassword(dto.getPassword());
+        user.setMobileNo(dto.getMobileNo());
+        user.setDateOfBirth(dto.getDateOfBirth());
+        user.setRole(dto.getRole());
+        user.setAadhaarNumber(dto.getAadhaarNumber());
+        user.setPanCard(dto.getPanCard());
+        user.setActiveStatus(true);
+
+        // ADDRESS
+        List<Address> addresses = new ArrayList<>();
+
+        if (dto.getAddresses() != null) {
+            for (AddressDTO addressDTO : dto.getAddresses()) {
+
+                State state = stateRepository.findById(addressDTO.getStateId())
+                        .orElseThrow(() -> new RuntimeException("State not found"));
+
+                District district = districtRepository.findById(addressDTO.getDistrictId())
+                        .orElseThrow(() -> new RuntimeException("District not found"));
+
+                Address address = new Address();
+                address.setState(state);
+                address.setDistrict(district);
+                address.setCity(addressDTO.getCity());
+
+                addresses.add(address);
+            }
+        }
+
+        user.setAddresses(addresses);
+
+        // STEP 1: SAVE USER FIRST
+        User savedUser = userRepository.save(user);
+
+        // STEP 2: UPLOAD IMAGE
+        try {
+            if (image != null && !image.isEmpty()) {
+
+                String filePath =
+                        fileStorageUtil.saveProfileImage(savedUser.getId(), image);
+
+                savedUser.setProfileImageUrl(filePath);
+
+                userRepository.save(savedUser);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("User created but image upload failed", ex);
+        }
+        log.info("USER CREATED SUCCESSFULLY...");
+        // STEP 3: RETURN RESPONSE DTO (NOT ENTITY)
+        return modelMapper.map(savedUser, UserRequestDTO.class);
+    }
 
     @Override
     public UserDTO createUser(RegisterRequestDTO registerRequest) {

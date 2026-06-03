@@ -94,7 +94,8 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/api/v1/auth/**",
                                 "/oauth2/**",
-                                "/login/oauth2/**"
+                                "/login/oauth2/**",
+                                "/api/v1/user/**"
                         ).permitAll()
 
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()

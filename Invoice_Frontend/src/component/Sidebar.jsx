@@ -57,6 +57,8 @@ export default function Sidebar({ sidebarOpen }) {
           <FaDollarSign />
           {sidebarOpen && <span>Revenue</span>}
         </NavLink>
+
+         <NavLink to="/files">📁 Files</NavLink>
       </nav>
 
       <button
