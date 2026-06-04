@@ -2,7 +2,7 @@ package com.utiitsl.DMSAuthService.service.userService;
 
 import com.utiitsl.DMSAuthService.common.response.PageResponse;
 import com.utiitsl.DMSAuthService.dto.RegisterRequestDTO;
-import com.utiitsl.DMSAuthService.dto.UserDTO;
+import com.utiitsl.DMSAuthService.dto.user.UserDTO;
 import com.utiitsl.DMSAuthService.dto.login.UserRequestDTO;
 import com.utiitsl.DMSAuthService.entity.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,4 +25,6 @@ public interface UserService {
     UserDTO deactivateUser(String userName);
 
     public User findOrCreateOAuthUser(String email, String name);
+
+    Long findTotalActiveUserCount();
 }

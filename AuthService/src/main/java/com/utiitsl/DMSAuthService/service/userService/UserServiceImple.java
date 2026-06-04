@@ -4,9 +4,8 @@ import com.utiitsl.DMSAuthService.common.exceptionHandler.UserDefinedException;
 import com.utiitsl.DMSAuthService.common.response.PageResponse;
 import com.utiitsl.DMSAuthService.constants.ErrorMessage;
 import com.utiitsl.DMSAuthService.constants.Role;
-import com.utiitsl.DMSAuthService.dto.AuthenticationResponseDTO;
 import com.utiitsl.DMSAuthService.dto.RegisterRequestDTO;
-import com.utiitsl.DMSAuthService.dto.UserDTO;
+import com.utiitsl.DMSAuthService.dto.user.UserDTO;
 import com.utiitsl.DMSAuthService.dto.address.AddressDTO;
 import com.utiitsl.DMSAuthService.dto.login.UserRequestDTO;
 import com.utiitsl.DMSAuthService.entity.Address;
@@ -20,22 +19,14 @@ import com.utiitsl.DMSAuthService.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -199,50 +190,117 @@ public class UserServiceImple implements UserService{
 
     @Override
     public PageResponse<UserDTO> getAllUser(int page, int size) {
-        Page<User> userPage=userRepository.findAll(PageRequest.of(page, size));
+
+        Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
 
         return PageResponse.<UserDTO>builder()
-//                .data(userPage.getContent().stream().map(e-> modelMapper.map(e,UserDTO.class)).toList())
                 .data(userPage.getContent().stream()
-                        .map(e -> modelMapper.map(e, UserDTO.class)) // Correctly mapping each element
-                        .collect(Collectors.toList())) // Collect the mapped elements into a list
-                .currentPage(userPage.getNumber()).
-                totalPages(userPage.getTotalPages())
+                        .map(e -> UserDTO.builder()
+                                .id(e.getId())
+                                .firstName(e.getFirstName())
+                                .lastName(e.getLastName())
+                                .username(e.getUsername())
+                                .email(e.getEmail())
+                                .role(e.getRole())
+                                .activeStatus(e.isActiveStatus())
+                                .build())
+                        .collect(Collectors.toList()))
+                .currentPage(userPage.getNumber())
+                .totalPages(userPage.getTotalPages())
                 .hasNext(userPage.hasNext())
                 .hasPrevious(userPage.hasPrevious())
-                .totalRecords(userPage.getTotalElements()).
-                build();
+                .totalRecords(userPage.getTotalElements())
+                .build();
     }
 
-    @Override
-    public UserDTO updateUser(UserDTO userDTO,Integer id) {
-        Optional<User> userOptional=userRepository.findById(id);
+//    @Override
+//    public PageResponse<UserDTO> getAllUser(int page, int size) {
+//        Page<User> userPage=userRepository.findAll(PageRequest.of(page, size));
+//
+//        return PageResponse.<UserDTO>builder()
+////                .data(userPage.getContent().stream().map(e-> modelMapper.map(e,UserDTO.class)).toList())
+//                .data(userPage.getContent().stream()
+//                        .map(e -> modelMapper.map(e, UserDTO.class)) // Correctly mapping each element
+//                        .collect(Collectors.toList())) // Collect the mapped elements into a list
+//                .currentPage(userPage.getNumber()).
+//                totalPages(userPage.getTotalPages())
+//                .hasNext(userPage.hasNext())
+//                .hasPrevious(userPage.hasPrevious())
+//                .totalRecords(userPage.getTotalElements()).
+//                build();
+//    }
 
-        User user=null;
-        if(userOptional.isPresent()){
-            System.err.println(userOptional.get());
-            user=userOptional.get();
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
+//    @Override
+//    public UserDTO updateUser(UserDTO userDTO,Integer id) {
+//        Optional<User> userOptional=userRepository.findById(id);
+//
+//        User user=null;
+//        if(userOptional.isPresent()){
+//            System.err.println(userOptional.get());
+//            user=userOptional.get();
+//            user.setFirstName(userDTO.getFirstName());
+//            user.setLastName(userDTO.getLastName());
+//            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+//            user.setOriginalPassword(userDTO.getPassword());
+//            user.setEmail(userDTO.getEmail());
+//            user.setRole(userDTO.getRole());
+//            user.setActiveStatus(userDTO.getActiveStatus());
+//        }
+//        try{
+//            // update the user
+//            if(user!=null){
+//                userRepository.save(user);
+//            }
+//            System.out.println("DATA UPDATED..");
+//            return modelMapper.map(user,UserDTO.class);
+//        }
+//        catch (Exception ex){
+//            System.err.println(ex.getMessage());
+//            ex.printStackTrace();
+//        }
+//        throw new UserDefinedException(ErrorMessage.USER_ALREADY_EXISTS,HttpStatus.NOT_FOUND);
+//    }
+
+    public UserDTO updateUser(UserDTO userDTO, Integer id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserDefinedException(
+                        ErrorMessage.USER_NOT_FOUND,
+                        HttpStatus.NOT_FOUND));
+
+        // 🔥 PASSWORD VALIDATION
+        if (userDTO.getPassword() != null &&
+                !userDTO.getPassword().trim().isEmpty()) {
+
+            if (userDTO.getConfirmPassword() == null ||
+                    !userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+
+                throw new UserDefinedException(
+                        "Password and Confirm Password do not match",
+                        HttpStatus.BAD_REQUEST
+                );
+            }
+
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setRole(userDTO.getRole());
+        user.setActiveStatus(userDTO.getActiveStatus());
+
+        // Update password only if provided
+        if (userDTO.getPassword() != null &&
+                !userDTO.getPassword().trim().isEmpty()) {
+
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             user.setOriginalPassword(userDTO.getPassword());
-            user.setEmail(userDTO.getEmail());
-            user.setRole(userDTO.getRole());
-            user.setActiveStatus(userDTO.getActiveStatus());
         }
-        try{
-            // update the user
-            if(user!=null){
-                userRepository.save(user);
-            }
-            System.out.println("DATA UPDATED..");
-            return modelMapper.map(user,UserDTO.class);
-        }
-        catch (Exception ex){
-            System.err.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-        throw new UserDefinedException(ErrorMessage.USER_ALREADY_EXISTS,HttpStatus.NOT_FOUND);
+
+        User savedUser = userRepository.save(user);
+
+        return modelMapper.map(savedUser, UserDTO.class);
     }
 
     @Override
@@ -328,5 +386,10 @@ public class UserServiceImple implements UserService{
                             .role(Role.USER).build();
                     return userRepository.save(user);
                 });
+    }
+
+    @Override
+    public Long findTotalActiveUserCount() {
+        return userRepository.findTotalActiveUserCount();
     }
 }

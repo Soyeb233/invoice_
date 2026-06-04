@@ -13,6 +13,7 @@ import Header from "../Header";
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] =
     useState(true);
+    
 
   return (
     <div className="layout-wrapper">

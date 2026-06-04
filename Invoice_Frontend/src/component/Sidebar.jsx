@@ -14,6 +14,7 @@ import {
   FaDollarSign,
   FaHome,
   FaSignOutAlt,
+  FaFolder,
 } from "react-icons/fa";
 
 import "../style/Sidebar.css";
@@ -58,7 +59,10 @@ export default function Sidebar({ sidebarOpen }) {
           {sidebarOpen && <span>Revenue</span>}
         </NavLink>
 
-         <NavLink to="/files">📁 Files</NavLink>
+         <NavLink to="/files">
+              <FaFolder />
+          {sidebarOpen && <span>Files</span>}
+         </NavLink>
       </nav>
 
       <button

@@ -204,4 +204,9 @@ public class FileServiceImple implements FileService {
         }
     }
 
+    @Override
+    public Long findTotalFileUploadCount() {
+        return fileRepository.findTotalFileUploadCount();
+    }
+
 }

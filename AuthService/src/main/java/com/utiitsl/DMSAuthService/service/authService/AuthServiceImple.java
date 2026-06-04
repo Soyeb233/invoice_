@@ -1,18 +1,13 @@
 package com.utiitsl.DMSAuthService.service.authService;
 
-import com.utiitsl.DMSAuthService.constants.ErrorMessage;
 import com.utiitsl.DMSAuthService.dto.AuthenticationResponseDTO;
 import com.utiitsl.DMSAuthService.dto.LoginRequestDTO;
-import com.utiitsl.DMSAuthService.dto.RegisterRequestDTO;
-import com.utiitsl.DMSAuthService.common.exceptionHandler.UserDefinedException;
-import com.utiitsl.DMSAuthService.dto.UserDTO;
 import com.utiitsl.DMSAuthService.entity.RefreshToken;
 import com.utiitsl.DMSAuthService.entity.User;
 import com.utiitsl.DMSAuthService.repository.UserRepository;
 import com.utiitsl.DMSAuthService.service.jwtService.JwtService;
 import com.utiitsl.DMSAuthService.service.refreshTokenService.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

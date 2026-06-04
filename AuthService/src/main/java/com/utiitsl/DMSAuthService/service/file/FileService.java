@@ -14,4 +14,6 @@ public interface FileService  {
 
     void uploadChunk(MultipartFile file,int chunkIndex,int totalChunks,String fileName);
     String mergeFiles(String fileId,String fileName);
+
+    Long findTotalFileUploadCount();
 }

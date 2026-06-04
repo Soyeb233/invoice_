@@ -34,4 +34,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
             @Param("email") String email,
             @Param("deactivated") boolean isActivated
     );
+
+    @Query("SELECT COUNT(u) FROM User u WHERE u.activeStatus = true")
+    Long findTotalActiveUserCount();
 }

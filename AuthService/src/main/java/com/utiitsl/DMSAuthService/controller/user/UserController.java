@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utiitsl.DMSAuthService.common.response.APIResponse;
 import com.utiitsl.DMSAuthService.common.response.ResponseHandler;
 import com.utiitsl.DMSAuthService.constants.LoggerMessage;
-import com.utiitsl.DMSAuthService.constants.Role;
 import com.utiitsl.DMSAuthService.dto.RegisterRequestDTO;
-import com.utiitsl.DMSAuthService.dto.UserDTO;
+import com.utiitsl.DMSAuthService.dto.user.UserDTO;
 import com.utiitsl.DMSAuthService.dto.login.UserRequestDTO;
-import com.utiitsl.DMSAuthService.repository.UserRepository;
 import com.utiitsl.DMSAuthService.service.authService.AuthService;
 import com.utiitsl.DMSAuthService.service.logger.LogService;
 import com.utiitsl.DMSAuthService.service.userService.UserService;
@@ -24,11 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import static com.utiitsl.DMSAuthService.constants.LoggerMessage.MODULE_NAME;
 
@@ -85,7 +78,7 @@ public class UserController {
         return ResponseHandler.generateResponse(userService.createUser(registerRequest),HttpStatus.OK,true);
     }
 
-    @PreAuthorize("hasRole('ROLE_APPLICATION_ADMIN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_APPLICATION_ADMIN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/getAllUser")
     public ResponseEntity<APIResponse> getAllUser(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size,
@@ -113,7 +106,7 @@ public class UserController {
         return ResponseHandler.generateResponse(userService.getAllUser(page,size),HttpStatus.OK,true);
     }
 
-    @PreAuthorize("hasRole('ROLE_APPLICATION_ADMIN') or hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_APPLICATION_ADMIN') or hasRole('ROLE_ADMIN')")
     @PostMapping("/activateDeactivateUser/{username}/{status}")
     public ResponseEntity<APIResponse> activateDeactivateUser(@PathVariable String username,@PathVariable boolean status){
         System.err.println("USERNAME :"+username +"  STATUS :"+status);
@@ -123,9 +116,6 @@ public class UserController {
 
     @PutMapping("/editUser/{userId}")
     public ResponseEntity<APIResponse> editUser(@PathVariable Integer userId,@RequestBody UserDTO userDTO){
-        System.err.println("ID OF USER P "+userId);
-        System.err.println("USER DATA :");
-        System.err.println(userDTO);
         return ResponseHandler.generateResponse(userService.updateUser(userDTO,userId),HttpStatus.OK,true);
     }
 

@@ -14,7 +14,7 @@ import Dashboard from "../component/dashboard/Dashboard";
 import FacebookCallback from "../component/auth/FacebookCallback";
 import OAuthSuccess from "../component/auth/OAuthSuccess";
 
-import UsersList from "../component/dashList/UsersList";
+ 
 import SalesList from "../component/dashList/SalesList";
 import OrdersList from "../component/dashList/OrdersList";
 import RevenueList from "../component/dashList/RevenueList";
@@ -27,6 +27,7 @@ import FileItem from "../component/file/FileItem";
 import FileList from "../component/file/FileList";
 import FileManager from "../component/file/FileManager ";
 import FilePreview from "../component/file/FilePreview";
+import UserList from "../component/user/UserList";
 
 export default function Routing() {
 
@@ -66,7 +67,7 @@ export default function Routing() {
 
         <Route
           path="/users"
-          element={<UsersList />}
+          element={<UserList />}
         />
 
         <Route
